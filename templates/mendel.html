@@ -1,0 +1,113 @@
+{% extends "layout.html"  %}
+
+
+() ---POST--->
+{% block contenido %}
+<main>
+    <form method="post" action="/mendel" id="formulario">
+        {% if cantidad_alelos %}
+            <div class="row mb-5" >
+                <input type="number" id = "cantidad_alelos" name = "cantidad_alelos" value="{{ cantidad_alelos }}" hidden>
+                {% for i in range(cantidad_alelos * 2) %}
+                    <div class="col-1">
+                        <input type="text" class="form-control"
+                               {% if gameto11 != [] %} placeholder="{{ gameto11[i] }}" {% endif %}
+                               id ="alelo1" name="alelo1[]" required maxlength="1" required>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row mb-5">
+                {% if cantidad_alelos > 2 %}
+                    <div class="col" align="center">
+                        X
+                    </div>
+                {% else %}
+                    <div class="col" align="left">
+                        X
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row mb-5" align="center">
+                {% for i in range(cantidad_alelos * 2) %}
+                    <div class="col-1">
+                        <input type="text" class="form-control"
+                               {% if gameto22 != [] %} placeholder="{{ gameto22[i] }}" {% endif %}
+                               id ="alelo2" name="alelo2[]" required maxlength="1" required>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row mb-5">
+                    <input type="text" class="form-control" placeholder="coloca aqui el/los alelos a buscar"id = "buscador" maxlength="{{ cantidad_alelos * 4 }}" name = "alelo_buscado">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-outline-info">
+                    Crear tabla
+                </button>
+            </div>
+        {% else %}
+            <div class="col">
+                <label class="form-label" for="cantidad_alelos">
+                    Cantidad de genes
+                </label>
+                <input type="number" class="form-control" placeholder="AaBb = 2 genes; Aa = 1 gen" id = "cantidad_alelos" name = "cantidad_alelos" min="1" required>
+                <button type="submit" class="btn btn-outline-info">
+                    Ingresar
+                </button>
+            </div>
+        {% endif %}
+
+    </form>
+    <div class="table-responsive">
+        {% if matriz_alelos and cantidad_alelos %}
+            {% if alelo_buscado != "999999999" %}
+                <div class="col respuesta " align = "center">
+                    Los genotipos con el/los alelo/s "{{ alelo_buscado }}" están resaltados
+                </div>
+            {% endif %}
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        {% for cabeza in matriz_alelos[0] %}
+                            <th scope="col">
+                                {{ cabeza }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in matriz_alelos[1:] %}
+                        <tr>
+                            {% for casilla in fila %}
+                                {% if fila.index(casilla) == 0 %}
+                                    <th scope="row">
+                                        {{ casilla }}
+                                    </th>
+                                {% else %}
+                                    <td>
+                                        {{ casilla | safe }}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        {% else %}
+        {% endif %}
+    </div>
+    <div>
+        {% if matriz_alelos and cantidad_alelos %}
+            <a href="/mendel" class="btn btn-outline-primary">
+                Cambiar cantidad de genes...
+            </a>
+        {% else %}
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+
+
+

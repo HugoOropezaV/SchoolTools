@@ -1,0 +1,41 @@
+body {
+    size: landscape;
+   font-family: Century;
+    background-color: rebeccapurple;
+    margin: 100px;
+
+}
+
+h2 {
+    color: darkgreen;
+  /*color: crimson;*/
+}
+
+button{
+    font-size: xxx-large;
+    color: lightskyblue   ;
+    background-color: darkblue;
+}
+
+.respuesta{
+    color: greenyellow;
+    text-align: center;
+    font-family: "Comic Sans MS";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

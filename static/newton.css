@@ -1,0 +1,50 @@
+html {
+        background: radial-gradient(circle at 100%, grey, white 45%, white 60%, grey 80%);
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100%;
+
+
+}
+body{
+        background-color: transparent;
+}
+form{
+        font-family: Century;
+        font-size: large;
+}
+button{
+
+}
+.resultado{
+        font-family: "Comic Sans MS";
+        font-size: x-large;
+}
+.fondo_inicio {
+
+        background-image: url("../static/Mirage.png");
+        background-repeat: no-repeat;
+        background-size: 300px;
+        background-position: center;
+
+}
+.encontrado{
+        background-color: greenyellow;
+        font-size: x-large;
+
+}
+.respuesta{
+        font-family: "Comic Sans MS";
+        font-size: x-large;
+}
+
+.footer {
+    position: fixed;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+}
+.autor{
+        font-family: "Comic Sans MS";
+        font-size: small;
+}

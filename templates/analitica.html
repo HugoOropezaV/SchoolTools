@@ -1,0 +1,101 @@
+{% extends "layout.html"  %}
+{% block html_class %}
+{%  endblock %}
+{% block contenido %}
+<main>
+    <form method="post" action="/analitica" id="formulario">
+        <input type="text" id = "ecuacion_en_bruto" name = "ecuacion_en_bruto" value="{{ ecuacion_en_bruto }}" required>
+
+        <button type="submit" class="btn btn-outline-info">
+            Desarrollar
+        </button>
+    </form>
+
+
+    <p class = "resultado">
+        {% if ecuacion and mi_figura_conica == "no existe" %}
+            La ecuación {{ ecuacion | safe }} no representa ninguna figura cónica
+
+        {% elif ecuacion and mi_figura_conica == "circunferencia" %}
+            La ecuación {{ ecuacion | safe }} es de una {{ mi_figura_conica | safe }} {{ orientacion | safe }}
+            <p class="resultado" style="color: darkblue ">
+                Centro ({{ centro_h | safe }},{{ centro_k | safe }})
+            </p>
+            <p class="resultado">
+                Radio = {{ radio | safe }}
+            </p>
+
+        {% elif ecuacion and mi_figura_conica == "parabola" %}
+            La ecuación {{ ecuacion | safe }} es de una {{ mi_figura_conica | safe }} {{ orientacion | safe }}
+            <p class="resultado" style="color: darkblue">
+                Vertice ({{ vertice_h | safe }}, {{ vertice_k | safe }})
+            </p>
+            <p class="resultado">
+                Foco = ({{ foco_h | safe }}, {{ foco_k | safe }})
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Lado recto = {{ lado_recto | safe }}
+            </p>
+            <p class="resultado">
+                Distancia focal (p) = {{ distancia_focal | safe }}
+            </p>
+
+        {% elif ecuacion and mi_figura_conica == "elipse" %}
+            La ecuación {{ ecuacion | safe }} es de una {{ mi_figura_conica | safe }} {{ orientacion | safe}}
+            <p class="resultado" style="color: darkblue">
+                Semieje mayor(a) = {{ semieje_mayor | safe }}   Semieje menor(b) = {{ semieje_menor | safe }}
+            </p>
+            <p class="resultado">
+                Semieje focal(c) = {{ semieje_focal | safe }}
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Centro ({{ Centro_h | safe }}, {{ Centro_k | safe }})
+            </p>
+            <p class="resultado">
+                Vertices primarios: ({{ Vertice_principal_h | safe }}, {{ Vertice_principal_k | safe }})
+                ({{ Vertice_principal_prima_h | safe }}, {{ Vertice_principal_prima_k | safe }})
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Vertices secundarios: ({{ Vertice_sec_h | safe }}, {{ Vertice_sec_k | safe }})
+                ({{ Vertice_sec_prima_h | safe }}, {{ Vertice_sec_prima_k | safe }})
+            </p>
+            <p class="resultado">
+                Focos: ({{ Foco_h | safe }}, {{ Foco_k | safe }})
+                ({{ Foco_prima_h | safe }}, {{ Foco_prima_k | safe }})
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Lado recto = {{ Lado_recto | safe }}
+            </p>
+            <p class="resultado">
+                Excentricidad = {{ excentricidad | safe }}
+            </p>
+
+        {% elif ecuacion and mi_figura_conica == "hiperbola" %}
+            La ecuación {{ ecuacion | safe }} es de una {{ mi_figura_conica | safe }} {{ orientacion | safe}}
+            <p class="resultado" style="color: darkblue">
+                Semieje principal(a) = {{ semieje_menor }}   Semieje secundario(b) = {{ semieje_mayor }}
+
+            </p>
+            <p class="resultado">
+                Semieje focal(c) = {{ semieje_focal | safe }}
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Centro ({{ Centro_h | safe }}, {{ Centro_k | safe }})
+            </p>
+            <p class="resultado">
+                Vertices: ({{ Vertice_principal_h | safe }}, {{ Vertice_principal_k | safe }})
+                ({{ Vertice_principal_prima_h | safe }}, {{ Vertice_principal_prima_k | safe }})
+            </p>
+            <p class="resultado" style="color: darkblue">
+                Focos: ({{ Foco_h | safe }}, {{ Foco_k | safe }})
+                ({{ Foco_prima_h | safe }}, {{ Foco_prima_k | safe }})
+            </p>
+            <p class="resultado">
+                Lado recto = {{ Lado_recto | safe }}
+                Excentricidad = {{ excentricidad | safe }}
+            </p>
+        {% else %}
+        {% endif %}
+    </p>
+</main>
+{% endblock %}

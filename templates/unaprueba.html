@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../static/unapruebaestilo.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class ="titulo">
+<h4>
+    Bienvenido a su calculadora
+</h4>
+
+<form method="post" action="/operar">
+    <p class="pared">
+        Ingresa un numero:
+        <label>
+            <input value="{{ num }}" name = "numero">
+        </label>
+        <input value="{{ num2 }}" name ="numero2">
+
+    </p>
+    <input type="submit" name="operacion" value="multiplicar">
+
+    </input>
+    <input type="submit" name="operacion" value="dividir">
+
+    </input>
+    <input type="submit" name="operacion" value="sumar">
+
+    </input>
+    <input type="submit" name="operacion" value="restar">
+
+    </input>
+
+</form>
+</body>
+<body>
+<p class = "respuesta">
+    {% if res %}
+            El resultado es: {{ res }}
+    {% else %}
+            pulse algun boton
+    {% endif %}
+</p>
+</body>
+</html>

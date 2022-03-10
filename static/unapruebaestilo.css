@@ -1,0 +1,53 @@
+html{
+        background: radial-gradient(circle at 10%, #333, #333 50%, #eee 75%, #333 75%);
+
+}
+h4{
+    background-color: aliceblue;
+    font-family: "Bodoni MT Black";
+    color: indianred;
+}
+.pared{
+    font-family: "Comic Sans MS";
+    color: orange;
+}
+html{
+    height: 100%;
+}
+.titulo{
+    /*background-color: darkslategray;*/
+    background-repeat: no-repeat;
+    background-size: cover  ;
+}
+
+input{
+    background-color: lightyellow;
+
+}
+.respuesta{
+    color: greenyellow;
+    background-color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

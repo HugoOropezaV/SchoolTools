@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"
+    class="{% block html_class %}{% endblock %}"
+>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel = "stylesheet" href = "../static/newton.css" >
+    <meta charset="UTF-8">
+    <title>SchoolTools</title>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex bg.dark justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item ">
+                <a href="/" class="btn btn-outline-primary" aria-current="page">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="/newton" class="btn btn-outline-primary">
+                    Binomio de Newton
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="/mendel" class="btn btn-outline-primary">
+                    Leyes de Mendel
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a href="/analitica" class="btn btn-outline-primary">
+                    Figuras Cónicas
+                </a>
+            </li>
+        </ul>
+    </header>
+    {% block contenido %}{% endblock %}
+
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+<script language="javascript">
+$(document).ready(function() {
+    console.log('Hola!');
+
+    $('#exponente').blur(function() {
+        console.log('saliendo');
+        $('#formulario').validate();
+    })
+});
+</script>
+</html>
