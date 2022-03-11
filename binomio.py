@@ -228,7 +228,6 @@ def mi_llave(caracter):
 def leyes_mendel_inicial():
     return render_template("mendel.html")
 
-
 @app.post("/mendel")
 def leyes_mendel():
 
@@ -285,6 +284,7 @@ def leyes_mendel():
     gameto22.append( "".join(gameto22))
 
     return render_template("mendel.html",gameto22 = gameto22, gameto11 = gameto11, cantidad_alelos = lado_tabla, matriz_alelos = tabla, gameto1 = gameto1, gameto2 = gameto2, mi_alelo = elemento, alelo_buscado = alelo_buscado)
+
 
 @app.get("/analitica")
 def analitica():
@@ -750,7 +750,6 @@ def desarrollar_hiperbola(A, B, D, E, F, orintacion, H, K):
     return a_menor, b_mayor, c_focal, Centro_h, Centro_k, Vertice_h, Vertice_k, Vertice_prima_h, Vertice_prima_k,\
         Foco_h, Foco_k, Foco_prima_h, Foco_prima_k, Lado_recto, excentricidad
 @app.post("/redondeador_de_tuplas")
-
 def redondear_tupla(tupla_inicial, numero_de_decimales):
    tupla2 = ()
    for numero in tupla_inicial:
@@ -941,39 +940,8 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
             termino_F += mi_ecuacion[iterador].coheficiente
 
     if termino_C != 0:
-
-        termino_A, termino_B, termino_C, termino_D, termino_E, termino_F, H, K = traslacion_de_conica(termino_A, termino_B, termino_C, termino_D, termino_E, termino_F)
-        termino_A, termino_B, termino_C, termino_D, termino_E = rotar_conica(termino_A, termino_B, termino_C, termino_D, termino_E)
-        ecuacion_rotada = rearmador_de_ecuaciones(termino_A, termino_B, termino_C, termino_D, termino_E, termino_F)
-
-        mi_ecuacion_rotada, ecuacion_publica_rotada = organizar_ecuacion_conica(ecuacion_rotada)
-        print (ecuacion_publica_rotada)
-        if mi_ecuacion_rotada == ecuacion_publica_rotada:
-            mi_figura_conica = "no existe"
-            return render_template("analitica.html", ecuacion_rotada=ecuacion_rotada, mi_figura_conica=mi_figura_conica)
-        if ecuacion_publica_rotada[0][0] == "+":
-            del ecuacion_publica_rotada[0][0]
-        ecuacion_rotada = ""
-        for termino in ecuacion_publica_rotada:
-            for caracter in termino:
-                ecuacion_rotada += str(caracter)
-
-        numero_de_terminos = len(mi_ecuacion_rotada)
-
-
-        for iterador in range(0, numero_de_terminos):   #ecuacion_rotada es una lista de objetos
-            if mi_ecuacion_rotada[iterador].especie == "x^2":
-                termino_A += mi_ecuacion_rotada[iterador].coheficiente
-            elif mi_ecuacion_rotada[iterador].especie == "y^2":
-                termino_B += mi_ecuacion_rotada[iterador].coheficiente
-            elif mi_ecuacion_rotada[iterador].especie == "xy" or mi_ecuacion[iterador].especie == "yx" :
-                termino_C += mi_ecuacion_rotada[iterador].coheficiente
-            elif mi_ecuacion_rotada[iterador].especie == "x":
-                termino_D += mi_ecuacion_rotada[iterador].coheficiente
-            elif mi_ecuacion_rotada[iterador].especie == "y":
-                termino_E += mi_ecuacion_rotada[iterador].coheficiente
-            elif mi_ecuacion_rotada[iterador].especie == "":
-                termino_F += mi_ecuacion_rotada[iterador].coheficiente
+        mi_figura_conica = "no se puede procesar"
+        return render_template("analitica.html", ecuacion=ecuacion, mi_figura_conica=mi_figura_conica)
 
 
 
@@ -1066,6 +1034,281 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
 
 
     return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica)
+
+
+@app.get("/logica")
+def logica():
+    return render_template("logica.html")
+
+@app.post("/logica")
+def desarrolla_logica():
+    frase_logica = request.form.get("frase_logica")
+    frase_logica = corrige_proposiciones(frase_logica)
+    if frase_logica == None:
+        frase_logica = "no legible"
+        return render_template("logica.html", frase_logica= frase_logica)
+
+    lista_proposicion, lista_proposiciones = posibilidades_logicas(frase_logica)
+
+    lista_proposicion_correcta = operadores_logicos(lista_proposicion)
+
+    tabla_de_verdad_solucion = []
+    lista_proposicion_posible = lista_proposicion_correcta[:]
+    lista_de_repeticiones = repeated_characters(lista_proposicion_correcta)
+
+    for proposiciones in lista_proposiciones:
+        i = 0
+        lista_proposicion_correcta = lista_proposicion_posible[:]
+        for termino in lista_proposicion_correcta:
+            if termino == True or termino == False or len(termino) > 1:
+                continue
+            if 65 <= ord(termino) <= 90:
+                for numero_repeticiones in range(lista_de_repeticiones[i + i + 1]):
+                    lista_proposicion_correcta[lista_proposicion_correcta.index(termino)] = proposiciones[i]
+                i += 1
+        lista_proposicion_polaca = shuting_yard(lista_proposicion_correcta)
+        tabla_de_verdad_solucion.append(lista_proposicion_polaca)
+    for proposicion in tabla_de_verdad_solucion:
+        tabla_de_verdad_solucion[tabla_de_verdad_solucion.index(proposicion)] = desarrolla_metodo_polaco_inverso(proposicion)
+
+    tabla_de_verdad_solucion.insert(0, lista_proposicion_posible)
+    return render_template("logica.html", tabla_de_verdades = tabla_de_verdad_solucion)
+
+@app.post("/verifica_op_binarios")
+def tablas_de_verdad_binarias(operando1, operando2, operador):
+    if operador == "^":
+        return (operando1 and operando2)
+
+    elif operador == "o":
+        return (operando1 or operando2)
+
+    elif operador == "->":
+        if operando1 == True and operando2 == False:
+            return False
+        else:
+            return True
+
+    elif operador == "<->":
+        return(operando1 == operando2)
+    else:
+        return None
+
+@app.post("/verifica_op_unarios")
+def tablas_de_verdad_unarias(operando, operador):
+    if operador == "~":
+        return (not operando)
+    else:
+        return None
+
+@app.post("/busca_repetidos")
+def repeated_characters(lista_terminos):
+    lista_repetidos = []#P,2,Q,1...
+    for termino in lista_terminos:
+        if len(termino) > 1:
+            continue
+        elif 65 <= ord(termino) <= 90:
+            if termino in lista_repetidos:
+                continue
+            k = 0
+            lista_repetidos.append(termino)
+            for termino2 in lista_terminos:
+                if termino == termino2:
+                    k +=1
+            lista_repetidos.append(k)
+    return lista_repetidos
+
+@app.post("/separador_logico")#operadores ^, o, ->, <->, ~
+def operadores_logicos(lista_proposicion):
+    index = 0
+    lista_proposicion_correcta = []
+    while index < len(lista_proposicion):
+        termino = ""
+        if lista_proposicion[index] == "<":
+            while lista_proposicion[index] != ">":
+                termino += lista_proposicion[index]
+                index += 1
+            termino += lista_proposicion[index]
+        elif lista_proposicion[index] == "-":
+            termino += lista_proposicion[index]
+            index += 1
+            termino += lista_proposicion[index]
+        if termino != "":
+            lista_proposicion_correcta.append(termino)
+        else:
+            lista_proposicion_correcta.append(lista_proposicion[index])
+        index += 1
+    return lista_proposicion_correcta
+
+@app.post("/posibilidades")
+def posibilidades_logicas(frase):
+    mi_lista = [caracter for caracter in frase]
+
+    terminales = 0
+    for index in range(len(mi_lista)):
+        if 97 <= ord(mi_lista[index]) <= 122 and ord(mi_lista[index]) != 111 :
+            if chr(ord(mi_lista[index]) - 32) not in mi_lista:
+                terminales += 1
+            mi_lista[index] = chr(ord(mi_lista[index]) - 32)
+
+
+
+    lista_proposiciones = []
+    numero_combinaciones = 2 ** terminales
+    valores = [True, False]
+
+    for combo in range(numero_combinaciones):  # 0-3
+        proposicion = []
+        for divisor in range(terminales):  # 0-1
+
+            if (combo // (2 ** divisor)) % 2 == 0:
+                proposicion.append(valores[0])
+            else:
+                proposicion.append(valores[1])
+
+        lista_proposiciones.append(proposicion)
+
+    return mi_lista, lista_proposiciones
+
+@app.post("/algoritmo")
+def shuting_yard(proposicion):
+    lista_prioridad = ["(","<->", "->", "o", "^","~" ]
+    queue = []
+    pile = []
+    for termino in proposicion:
+        if termino == False or termino == True:
+            queue.append(termino)
+
+        elif termino == ")":
+            while pile[len(pile) - 1] != "(":
+                queue.append(pile.pop())
+            pile.pop()
+        else:
+            if len(pile) == 0:
+                pile.append(termino)
+            elif lista_prioridad.index(termino) < lista_prioridad.index(pile[len(pile) - 1]) and lista_prioridad.index(termino) != 0:
+                queue.append(pile.pop())
+                pile.append(termino)
+            else:
+                pile.append(termino)
+
+    while pile != []:
+        queue.append(pile.pop())
+
+    return queue
+
+@app.post("/polaco_inverso")
+def desarrolla_metodo_polaco_inverso(cola):
+    index = 0
+    while index < len(cola):
+        if  cola[index] != True and cola[index] != False :
+            if cola[index] == "~":
+                operando1 = cola.pop(index - 1)
+                operador = cola.pop(index - 1)
+                cola.insert(index - 1, tablas_de_verdad_unarias(operando1, operador))
+                index -= 1
+                continue
+            else:
+                operando1 = cola.pop(index - 2)
+                operando2 = cola.pop(index - 2)
+                operador = cola.pop(index - 2)
+                cola.insert(index - 2, tablas_de_verdad_binarias(operando1, operando2, operador))
+                index -= 2
+                continue
+        index += 1
+
+    return cola
+
+@app.post("/corregidor")
+def corrige_proposiciones(frase):
+    frase = elimina_espacios(frase)
+
+    lista_permitida1 = [x for x in range(97, 123)]  # minusculas
+    lista_permitida2 = [x for x in range(65, 91)]  # mayusculas
+    lista_permitida3 = [40, 41, 126, 45, 60, 62, 94, 111] #operadores/simbolos
+    lista_permitida1.remove(111)
+    lista_especial = [40, 41]
+
+    parantesis_a = 0
+    parantesis_c = 0
+
+    for caracter in frase:
+
+        if ord(caracter) in lista_permitida2:
+            frase[frase.index(caracter)] = chr(ord(caracter) + 32)
+    final = frase[len(frase) - 1]
+    if ord(final) != 41 or ord(frase[0]) != 40:
+        if ord(final) in lista_permitida3 or (ord(frase[0]) in lista_permitida3 and ord(frase[0]) != 126 ):
+            return None
+
+    for caracter in frase:
+        if ord(caracter) not in lista_permitida1 and ord(caracter) not in lista_permitida3:
+            return None
+        else:
+            if caracter == "(":
+                parantesis_a += 1
+            elif caracter == ")":
+                parantesis_c += 1
+            elif caracter == "<":
+                i = frase.index(caracter)
+                signo_esperado = ""
+                while i <= frase.index(caracter) + 2:
+                    signo_esperado.join(frase[i])
+                if signo_esperado != "<->":
+                    return None
+            elif caracter == "-":
+                if frase[frase.index(caracter) + 1] != ">":
+                    return None
+            elif caracter == ">":
+                if frase[frase.index(caracter) - 1] != "-":
+                    return None
+            elif caracter == "~":
+                if ord(frase[frase.index(caracter) + 1]) not in lista_permitida1 and frase[frase.index(caracter) + 1] != "~":
+                    return None
+            elif 0 < frase.index(caracter) < len(frase) - 1:
+                if ord(caracter) in lista_permitida1 and (ord(frase[frase.index(caracter) + 1]) in lista_permitida3 and ord(frase[frase.index(caracter) - 1]) in lista_permitida3):
+                    continue
+                elif ord(caracter) in lista_permitida3 and (ord(frase[frase.index(caracter) + 1]) in lista_especial or ord(frase[frase.index(caracter) + 1]) in lista_permitida1) and (ord(frase[frase.index(caracter) - 1]) in lista_especial or ord(frase[frase.index(caracter) - 1]) in lista_permitida1):
+                    continue
+                else:
+                    return None
+
+
+
+
+
+
+    if parantesis_a != parantesis_c:
+        return None
+    return frase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

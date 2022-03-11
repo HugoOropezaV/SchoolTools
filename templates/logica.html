@@ -1,0 +1,51 @@
+{% extends "layout.html"  %}
+{% block html_class %}
+{%  endblock %}
+{% block contenido %}
+<main>
+    <form method="post" action="/logica" id="formulario">
+        <input type="text" id = "frase_logica" name = "frase_logica" value="{{ frase_logica }}" required>
+
+        <button type="submit" class="btn btn-outline-info">
+            Desarrollar tablas de verdad
+        </button>
+    </form>
+    <div class="table-responsive">
+        {% if tabla_de_verdades %}
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        {% for cabeza in tabla_de_verdades[0] %}
+                            <th scope="col">
+                                {{ cabeza }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in tabla_de_verdades[1:] %}
+                        <tr>
+                            {% for casilla in fila %}
+                                <td>
+                                    {{ casilla | safe }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        {% endif %}
+    </div>
+    <div>
+        {% if frase_logica == "no legible" %}
+        <p>
+            hubo un error en la proposición ingresada al leerla
+        </p>
+        {% else %}
+        {% endif %}
+    </div>
+
+
+</main>
+{% endblock %}
