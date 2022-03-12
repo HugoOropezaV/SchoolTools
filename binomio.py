@@ -1043,12 +1043,12 @@ def logica():
 @app.post("/logica")
 def desarrolla_logica():
     frase_logica = request.form.get("frase_logica")
-    frase_logica = corrige_proposiciones(frase_logica)
-    if frase_logica == None:
-        frase_logica = "no legible"
-        return render_template("logica.html", frase_logica= frase_logica)
+    frase_logica_corregida = corrige_proposiciones(frase_logica)
+    if frase_logica_corregida == None:
+        frase_logica_corregida = "no legible"
+        return render_template("logica.html", frase_logica_corregida = frase_logica_corregida)
 
-    lista_proposicion, lista_proposiciones = posibilidades_logicas(frase_logica)
+    lista_proposicion, lista_proposiciones = posibilidades_logicas(frase_logica_corregida)
 
     lista_proposicion_correcta = operadores_logicos(lista_proposicion)
 
@@ -1079,7 +1079,7 @@ def tablas_de_verdad_binarias(operando1, operando2, operador):
     if operador == "^":
         return (operando1 and operando2)
 
-    elif operador == "o":
+    elif operador == "v":
         return (operando1 or operando2)
 
     elif operador == "->":
@@ -1117,7 +1117,7 @@ def repeated_characters(lista_terminos):
             lista_repetidos.append(k)
     return lista_repetidos
 
-@app.post("/separador_logico")#operadores ^, o, ->, <->, ~
+@app.post("/separador_logico")#operadores ^, v, ->, <->, ~
 def operadores_logicos(lista_proposicion):
     index = 0
     lista_proposicion_correcta = []
@@ -1145,7 +1145,7 @@ def posibilidades_logicas(frase):
 
     terminales = 0
     for index in range(len(mi_lista)):
-        if 97 <= ord(mi_lista[index]) <= 122 and ord(mi_lista[index]) != 111 :
+        if 97 <= ord(mi_lista[index]) <= 122 and ord(mi_lista[index]) != 118 :
             if chr(ord(mi_lista[index]) - 32) not in mi_lista:
                 terminales += 1
             mi_lista[index] = chr(ord(mi_lista[index]) - 32)
@@ -1171,7 +1171,7 @@ def posibilidades_logicas(frase):
 
 @app.post("/algoritmo")
 def shuting_yard(proposicion):
-    lista_prioridad = ["(","<->", "->", "o", "^","~" ]
+    lista_prioridad = ["(","<->", "->", "v", "^","~" ]
     queue = []
     pile = []
     for termino in proposicion:
@@ -1224,8 +1224,8 @@ def corrige_proposiciones(frase):
 
     lista_permitida1 = [x for x in range(97, 123)]  # minusculas
     lista_permitida2 = [x for x in range(65, 91)]  # mayusculas
-    lista_permitida3 = [40, 41, 126, 45, 60, 62, 94, 111] #operadores/simbolos
-    lista_permitida1.remove(111)
+    lista_permitida3 = [40, 41, 126, 45, 60, 62, 94, 118] #operadores/simbolos
+    lista_permitida1.remove(118)
     lista_especial = [40, 41]
 
     parantesis_a = 0

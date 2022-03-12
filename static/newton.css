@@ -46,3 +46,7 @@ button{
         font-family: "Comic Sans MS";
         font-size: small;
 }
+.list_square{
+        list-style-type: square;
+        font-size: 20px;
+}

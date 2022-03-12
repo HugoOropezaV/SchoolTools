@@ -3,6 +3,23 @@
 {%  endblock %}
 {% block contenido %}
 <main>
+    <ul class="list_square">
+        <li>
+            Conjunción: ^
+        </li>
+        <li>
+            Disyunción: v
+        </li>
+        <li>
+            negación: ~
+        </li>
+        <li>
+            implica: ->
+        </li>
+        <li>
+            equivale: <->
+        </li>
+    </ul>
     <form method="post" action="/logica" id="formulario">
         <input type="text" id = "frase_logica" name = "frase_logica" value="{{ frase_logica }}" required>
 
@@ -38,8 +55,8 @@
         {% endif %}
     </div>
     <div>
-        {% if frase_logica == "no legible" %}
-        <p>
+        {% if frase_logica_corregida == "no legible" %}
+        <p class="resultado">
             hubo un error en la proposición ingresada al leerla
         </p>
         {% else %}
