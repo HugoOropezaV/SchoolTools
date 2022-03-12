@@ -1232,14 +1232,29 @@ def corrige_proposiciones(frase):
     parantesis_c = 0
 
     for caracter in frase:
-
         if ord(caracter) in lista_permitida2:
             frase[frase.index(caracter)] = chr(ord(caracter) + 32)
-    final = frase[len(frase) - 1]
-    if ord(final) != 41 or ord(frase[0]) != 40:
-        if ord(final) in lista_permitida3 or (ord(frase[0]) in lista_permitida3 and ord(frase[0]) != 126 ):
-            return None
 
+    k = 0
+    if len(frase) < 3:
+        for x in range(len(frase)):
+            if frase[x] != chr(126):
+                if ord(frase[x]) not in lista_permitida1:
+                    return None
+
+                else:
+                    k += 1
+                    continue
+
+        if 1 != k:
+            return None
+    else:
+        final = frase[len(frase) - 1]
+        if ord(final) != 41 or ord(frase[0]) != 40:
+            if ord(final) in lista_permitida3 or (ord(frase[0]) in lista_permitida3 and ord(frase[0]) != 126):
+                return None
+
+    index = 0
     for caracter in frase:
         if ord(caracter) not in lista_permitida1 and ord(caracter) not in lista_permitida3:
             return None
@@ -1249,34 +1264,41 @@ def corrige_proposiciones(frase):
             elif caracter == ")":
                 parantesis_c += 1
             elif caracter == "<":
-                i = frase.index(caracter)
+                i = index
                 signo_esperado = ""
-                while i <= frase.index(caracter) + 2:
-                    signo_esperado.join(frase[i])
+                while i <= index + 2:
+                    signo_esperado += frase[i]
+                    i += 1
                 if signo_esperado != "<->":
                     return None
+
+                else:
+                    index += 1
+                    continue
+
             elif caracter == "-":
-                if frase[frase.index(caracter) + 1] != ">":
+                if frase[index + 1] == ">":
+                    index += 1
+                    continue
+
+                else:
                     return None
             elif caracter == ">":
-                if frase[frase.index(caracter) - 1] != "-":
+                if frase[index - 1] != "-":
                     return None
             elif caracter == "~":
-                if ord(frase[frase.index(caracter) + 1]) not in lista_permitida1 and frase[frase.index(caracter) + 1] != "~":
+                if ord(frase[index + 1]) not in lista_permitida1 and frase[index + 1] != "~":
                     return None
-            elif 0 < frase.index(caracter) < len(frase) - 1:
-                if ord(caracter) in lista_permitida1 and (ord(frase[frase.index(caracter) + 1]) in lista_permitida3 and ord(frase[frase.index(caracter) - 1]) in lista_permitida3):
+            elif 0 < index < (len(frase) - 1):
+                if ord(caracter) in lista_permitida1 and (ord(frase[index + 1]) in lista_permitida3 and ord(frase[index - 1]) in lista_permitida3):
+                    index += 1
                     continue
-                elif ord(caracter) in lista_permitida3 and (ord(frase[frase.index(caracter) + 1]) in lista_especial or ord(frase[frase.index(caracter) + 1]) in lista_permitida1) and (ord(frase[frase.index(caracter) - 1]) in lista_especial or ord(frase[frase.index(caracter) - 1]) in lista_permitida1):
+                elif ord(caracter) in lista_permitida3 and (ord(frase[index + 1]) in lista_especial or ord(frase[index + 1]) in lista_permitida1 or ord(frase[index + 1]) == 126) and (ord(frase[frase.index(caracter) - 1]) in lista_especial or ord(frase[frase.index(caracter) - 1]) in lista_permitida1):
+                    index += 1
                     continue
                 else:
                     return None
-
-
-
-
-
-
+        index += 1
     if parantesis_a != parantesis_c:
         return None
     return frase
