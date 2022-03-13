@@ -4,11 +4,32 @@
 {% block contenido %}
 <main>
     <form method="post" action="/analitica" id="formulario">
-        <input type="text" id = "ecuacion_en_bruto" name = "ecuacion_en_bruto" value="{{ ecuacion_en_bruto }}" required>
 
-        <button type="submit" class="btn btn-outline-info">
-            Desarrollar
-        </button>
+        <div class="d-grid gap-2 col-11 mx-auto">
+            <ul class="list_square">
+                <li>
+                    Introduzca la ecuación en su forma general: Ax^2 + Cy^2 + Dx + Ey + F
+                </li>
+                <li>
+                    Decimales colócalos con "."
+                </li>
+                <li>
+                    No se podrán leer ecuaciones con paréntesis
+                </li>
+                <li>
+                    lo que pongas debajo se iguala a 0 por defecto
+                </li>
+            </ul>
+            <input placeholder="Ax^2 + Cy^2 + Dx + Ey + F" class="form-control" type="text" id = "ecuacion_en_bruto" name = "ecuacion_en_bruto" value="{{ ecuacion_en_bruto }}" required>
+
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button type="submit" class="btn btn-outline-info">
+                Desarrollar
+            </button>
+        </div>
+
     </form>
 
 
@@ -17,6 +38,8 @@
             La ecuación {{ ecuacion | safe }} no representa ninguna figura cónica
         {% elif ecuacion and mi_figura_conica == "no se puede procesar" %}
             La ecuación {{ ecuacion | safe }} está rotada, introduzcala rotada si quiere su desarrollo
+        {% elif ecuacion and mi_figura_conica == "complejo" %}
+            La ecuación {{ ecuacion | safe }} presenta operaciones con números complejos
 
         {% elif ecuacion and mi_figura_conica == "circunferencia" %}
             La ecuación {{ ecuacion | safe }} es de una {{ mi_figura_conica | safe }} {{ orientacion | safe }}

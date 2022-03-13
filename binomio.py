@@ -300,16 +300,33 @@ def elimina_espacios(lista):
 
 @app.post("/llena_coheficientes_vacios")
 def corrige_coheficientes_vacios(lista_de_coheficientes):  # para esta funcion, usar "©" como simbolo de coheficiente vacio (ascii 184)
-
-    for indice in range(0, len(lista_de_coheficientes)):
+    numero_slashes = 0
+    for posible_coheficiente in lista_de_coheficientes:
+        for caracter in posible_coheficiente:
+            if caracter == "/":
+                numero_slashes += 1
+        if numero_slashes > 1:
+            return True
+        else:
+            numero_slashes = 0
+    for indice in range(len(lista_de_coheficientes)):
 
         if lista_de_coheficientes[indice] == "©":
             lista_de_coheficientes[indice] = 1
+        else:
+            for index in range(len(lista_de_coheficientes[indice])) :
+                if lista_de_coheficientes[indice][index] == "/":
+                    numerador, denominador = simplificador_de_fracciones(lista_de_coheficientes[indice][0:index], lista_de_coheficientes[indice][index + 1:])
+                    lista_de_coheficientes[indice] = numerador / denominador
+                    break
         lista_de_coheficientes[indice] = float(lista_de_coheficientes[indice])
     return lista_de_coheficientes
 
 @app.post("/simplificador")
 def simplificador_de_fracciones(numerador, denominador):
+
+   numerador = float(numerador)
+   denominador = float(denominador)
    divisor = 2
 
    if numerador == denominador:
@@ -363,37 +380,41 @@ def llena_coheficientes_str(mi_ecuacion):
 
    for indice in range(1, len(mi_ecuacion) - 1):    # concatena coheficientes (str)
 
-      if 48 <= ord(mi_ecuacion[indice]) <= 57 or ord(mi_ecuacion[indice]) == 184 or ord(mi_ecuacion[indice]) == 46:
-         if mi_ecuacion[indice - 1] != "^":
-            if 48 <= ord(mi_ecuacion[indice + 1]) <= 57 or mi_ecuacion[indice + 1] == "x" or mi_ecuacion[indice + 1] == "y" \
-               or mi_ecuacion[indice + 1] == " " or mi_ecuacion[indice + 1] == "+" \
-                    or mi_ecuacion[indice + 1] == "-" or mi_ecuacion[indice + 1] == ".":
+       if 48 <= ord(mi_ecuacion[indice]) <= 57 or ord(mi_ecuacion[indice]) == 184 or ord(mi_ecuacion[indice]) == 46  or ord(mi_ecuacion[indice]) == 47:
+           if mi_ecuacion[indice - 1] != "^":
+              if 48 <= ord(mi_ecuacion[indice + 1]) <= 57 or mi_ecuacion[indice + 1] == "x" or mi_ecuacion[indice + 1] == "y" \
+                 or mi_ecuacion[indice + 1] == " " or mi_ecuacion[indice + 1] == "+" \
+                    or mi_ecuacion[indice + 1] == "-" or mi_ecuacion[indice + 1] == "." or ord(mi_ecuacion[indice + 1]) == 47:
 
-               if ord(mi_ecuacion[indice]) == 184:
-                  coheficiente_temporal = "-1"
-                  lista_de_coheficientes[posicion] = coheficiente_temporal
+                 if ord(mi_ecuacion[indice]) == 184:
+                    coheficiente_temporal = "-1"
+                    lista_de_coheficientes[posicion] = coheficiente_temporal
 
-               else:
-                  coheficiente_temporal += mi_ecuacion[indice]
-                  lista_de_coheficientes[posicion] = coheficiente_temporal
+                 else:
+                    coheficiente_temporal += mi_ecuacion[indice]
+                    lista_de_coheficientes[posicion] = coheficiente_temporal
 
-      if mi_ecuacion[indice] == "x" or mi_ecuacion[indice] == "y":
-         posicion += 1
-         coheficiente_temporal = ""
 
-      elif mi_ecuacion[indice] != "₡":
 
-         if mi_ecuacion[indice + 1] == "+" or mi_ecuacion[indice + 1] == "-":
+       if mi_ecuacion[indice] == "x" or mi_ecuacion[indice] == "y":
+           posicion += 1
+           coheficiente_temporal = ""
 
-            if mi_ecuacion[indice - 1] != "^":
-               posicion += 1
-               coheficiente_temporal = ""
+       elif mi_ecuacion[indice] != "₡":
+
+           if mi_ecuacion[indice + 1] == "+" or mi_ecuacion[indice + 1] == "-":
+
+              if mi_ecuacion[indice - 1] != "^":
+                 posicion += 1
+                 coheficiente_temporal = ""
+
+
    return lista_de_coheficientes
 
 @app.post("/delata_errores")
 def busca_errores(mi_ecuacion):
 
-    mi_ecuacion = elimina_espacios(mi_ecuacion)
+
 
     mi_ecuacion.append(" ")
     lista_prohibida1 = [x for x in range(95, 120)] #minusculas
@@ -402,28 +423,44 @@ def busca_errores(mi_ecuacion):
 
     lista_prohibida1.append(44)
     #lista_prohibida1.append(46)
-    lista_prohibida1.append(47)
+    #lista_prohibida1.append(47)
     for caracter in mi_ecuacion:
        if 32 <= ord(caracter) <= 121:
-            if ord(caracter) not in lista_prohibida1:
-                if ord(caracter) not in lista_prohibida2:
-                    if ord(caracter) not in lista_prohibida3:
-                        pass
-                    else:
-                        return True
-                else:
-                    return True
+            if ord(caracter)  not in lista_prohibida1 and ord(caracter) not in lista_prohibida2 and ord(caracter) not in lista_prohibida3:
+                variable_de_adorno = 0
             else:
                 return True
        else:
             return True
-
+    lista_numeros = [x for x in range(48, 58)]
     for indice in range(1, len(mi_ecuacion)):
         if mi_ecuacion[indice - 1] == "^":
             if 51 <= ord(mi_ecuacion[indice]) <= 57:
                 return True
             elif 48 <= ord(mi_ecuacion[indice]) <= 50:
                 if 48 <= ord(mi_ecuacion[indice + 1]) <= 57:
+                    return True
+    for indice in range(len(mi_ecuacion) - 1):
+        if mi_ecuacion[indice] == "+" or mi_ecuacion[indice] == "-" or mi_ecuacion[indice] == "^" or mi_ecuacion[indice] == "/":
+            if mi_ecuacion[indice + 1] == "+" or mi_ecuacion[indice + 1] == "-" or mi_ecuacion[indice + 1] == "^" or mi_ecuacion[indice + 1] == "/":
+                return True
+        if mi_ecuacion[indice + 1] == "^":
+            if ord(mi_ecuacion[indice]) in lista_numeros:
+                return True
+
+    for indice in range(1, len(mi_ecuacion) - 1):
+        if mi_ecuacion[indice] == "/":
+            if ord(mi_ecuacion[indice - 1]) not in lista_numeros or ord(mi_ecuacion[indice + 1]) not in lista_numeros:
+                return True
+
+    for indice in range(len(mi_ecuacion) - 1):
+        if mi_ecuacion[indice] == "x" or mi_ecuacion[indice] == "y":
+            if ord(mi_ecuacion[indice + 1]) in lista_numeros:
+                return True
+    for indice in range(len(mi_ecuacion) -2):
+        if mi_ecuacion[indice] == "^":
+            if mi_ecuacion[indice + 2] != "+":
+                if mi_ecuacion[indice + 2] != "-":
                     return True
 
     return False
@@ -477,14 +514,16 @@ def rearmador_de_ecuaciones(A, B, C, D, E, F):
 def organizar_ecuacion_conica(ecuacion):
     mi_ecuacion = []
     termino = []
-
     for caracter in ecuacion:
-        mi_ecuacion.append(caracter)
+        if caracter != " ":
+            mi_ecuacion.append(caracter)
     if mi_ecuacion[0] != "-" and mi_ecuacion[0] != "+":
         mi_ecuacion.insert(0, "+")
 
-    if busca_errores(mi_ecuacion):
+    if busca_errores(mi_ecuacion) == True:
         return ecuacion, ecuacion
+    elif busca_errores(mi_ecuacion) == 123:
+        return 1,2
 
     for indice in range(1, len(mi_ecuacion)):
         if (mi_ecuacion[indice] == "y" ) and (mi_ecuacion[indice - 1] == "x"):
@@ -493,12 +532,13 @@ def organizar_ecuacion_conica(ecuacion):
             mi_ecuacion[indice - 1] = "₡"
 
 
-    mi_ecuacion = elimina_espacios(mi_ecuacion)
+
 
     lista_de_coheficientes = llena_coheficientes_str(mi_ecuacion)
 
     lista_de_coheficientes = corrige_coheficientes_vacios(lista_de_coheficientes)
-
+    if lista_de_coheficientes == True:
+        return 0, 0
     mi_ecuacion = elimina_espacios(mi_ecuacion)
 
     lista_de_terminos = separa_terminos_algebraicos(mi_ecuacion)
@@ -751,20 +791,23 @@ def desarrollar_hiperbola(A, B, D, E, F, orintacion, H, K):
         Foco_h, Foco_k, Foco_prima_h, Foco_prima_k, Lado_recto, excentricidad
 @app.post("/redondeador_de_tuplas")
 def redondear_tupla(tupla_inicial, numero_de_decimales):
-   tupla2 = ()
-   for numero in tupla_inicial:
-       numero = round(numero, numero_de_decimales)
-       aux = ("xd", numero)
-       tupla2 = tupla2 + aux
+    try:
+       tupla2 = ()
+       for numero in tupla_inicial:
+           numero = round(numero, numero_de_decimales)
+           aux = ("xd", numero)
+           tupla2 = tupla2 + aux
 
-   lista = list(tupla2)
-   lista2 = []
+       lista = list(tupla2)
+       lista2 = []
 
-   for numero in lista:
-      if numero != "xd":
-         lista2.append(numero)
-   tupla_final = tuple(lista2)
-   return tupla_final
+       for numero in lista:
+          if numero != "xd":
+             lista2.append(numero)
+       tupla_final = tuple(lista2)
+       return tupla_final
+    except TypeError:
+        return None
 
 @app.post("/resuleve_matriz_para_rotar_conica")
 def resolviendo_matriz_M(matriz):
@@ -913,6 +956,11 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
     if mi_ecuacion == ecuacion_publica:
         mi_figura_conica = "no existe"
         return render_template("analitica.html", ecuacion=ecuacion, mi_figura_conica=mi_figura_conica)
+    if mi_ecuacion == 1 and ecuacion_publica == 2:
+        mi_figura_conica = "decimal"
+        return render_template("analitica.html", ecuacion=ecuacion, mi_figura_conica=mi_figura_conica)
+
+
     if ecuacion_publica[0][0] == "+":
         del ecuacion_publica[0][0]
     ecuacion = ""
@@ -960,6 +1008,9 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
             mi_figura_conica = "no existe"
         else:
             atributos_redondeados = redondear_tupla(atributos, 3)
+            if atributos_redondeados == None:
+                mi_figura_conica = "complejo"
+                return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica)
             centro_h, centro_k, radio = atributos_redondeados
             return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica,
                                    centro_h = centro_h, centro_k = centro_k, radio = radio, orientacion = orientacion)
@@ -978,6 +1029,9 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
             mi_figura_conica = "no existe"
         else:
             atributos_redondeados = redondear_tupla(atributos, 3)
+            if atributos_redondeados == None:
+                mi_figura_conica = "complejo"
+                return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica)
             foco_h, foco_k, vertice_h, vertice_k, lado_recto, distancia_focal = atributos_redondeados
             return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica,
                                    foco_h = foco_h, foco_k = foco_k, vertice_h = vertice_h,
@@ -996,6 +1050,9 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
             mi_figura_conica = "no existe"
         else:
             atributos_redondeados = redondear_tupla(atributos, 3)
+            if atributos_redondeados == None:
+                mi_figura_conica = "complejo"
+                return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica)
             semieje_mayor, semieje_menor, semieje_focal, Centro_h, Centro_k, Vertice_principal_h, Vertice_principal_k, \
             Vertice_principal_prima_h, Vertice_principal_prima_k, Vertice_sec_h, Vertice_sec_k, Vertice_sec_prima_h, Vertice_sec_prima_k,\
             Foco_h, Foco_k, Foco_prima_h, Foco_prima_k, Lado_recto, excentricidad = atributos_redondeados
@@ -1022,6 +1079,9 @@ def geo_analitica():    #Ax^2 + By^2 + Dx + Ey + F = 0
             mi_figura_conica = "no existe"
         else:
             atributos_redondeados = redondear_tupla(atributos, 3)
+            if atributos_redondeados == None:
+                mi_figura_conica = "complejo"
+                return render_template("analitica.html", ecuacion = ecuacion, mi_figura_conica = mi_figura_conica)
             semieje_menor, semieje_mayor, semieje_focal, Centro_h, Centro_k, Vertice_principal_h, Vertice_principal_k, \
             Vertice_principal_prima_h, Vertice_principal_prima_k, \
             Foco_h, Foco_k, Foco_prima_h, Foco_prima_k, Lado_recto, excentricidad = atributos_redondeados
@@ -1053,9 +1113,9 @@ def desarrolla_logica():
     lista_proposicion_correcta = operadores_logicos(lista_proposicion)
 
     tabla_de_verdad_solucion = []
+    tabla_de_verdad_no_polaca = []
     lista_proposicion_posible = lista_proposicion_correcta[:]
     lista_de_repeticiones = repeated_characters(lista_proposicion_correcta)
-
     for proposiciones in lista_proposiciones:
         i = 0
         lista_proposicion_correcta = lista_proposicion_posible[:]
@@ -1066,13 +1126,35 @@ def desarrolla_logica():
                 for numero_repeticiones in range(lista_de_repeticiones[i + i + 1]):
                     lista_proposicion_correcta[lista_proposicion_correcta.index(termino)] = proposiciones[i]
                 i += 1
+        tabla_de_verdad_no_polaca.append(lista_proposicion_correcta)
         lista_proposicion_polaca = shuting_yard(lista_proposicion_correcta)
         tabla_de_verdad_solucion.append(lista_proposicion_polaca)
-    for proposicion in tabla_de_verdad_solucion:
-        tabla_de_verdad_solucion[tabla_de_verdad_solucion.index(proposicion)] = desarrolla_metodo_polaco_inverso(proposicion)
+    for index in range(len(tabla_de_verdad_solucion)):
+        tabla_de_verdad_solucion[index] = desarrolla_metodo_polaco_inverso(tabla_de_verdad_solucion[index], tabla_de_verdad_no_polaca[index])
 
     tabla_de_verdad_solucion.insert(0, lista_proposicion_posible)
-    return render_template("logica.html", tabla_de_verdades = tabla_de_verdad_solucion)
+    for fila in lista_proposiciones:
+        for index in range(len(fila)):
+            if fila[index] == True:
+                fila[index] = "V"
+            elif fila[index] == False:
+                fila[index] = "F"
+    i = 0
+    while i < len(lista_de_repeticiones):
+        lista_de_repeticiones[i] = str(lista_de_repeticiones[i])
+        if not 65 < ord(lista_de_repeticiones[i]) < 91:
+            lista_de_repeticiones.pop(i)
+            i -= 1
+        i += 1
+
+
+    lista_proposiciones.insert(0, lista_de_repeticiones)
+    for posible in lista_proposiciones:
+        posible.append(" ")
+    for num_fila in range(len(tabla_de_verdad_solucion)):
+        for index in range(len(lista_proposiciones[num_fila]) - 1, -1, -1):
+            tabla_de_verdad_solucion[num_fila].insert(0, lista_proposiciones[num_fila][index])
+    return render_template("logica.html", tabla_de_verdades = tabla_de_verdad_solucion, tabla_terminales = lista_proposiciones)
 
 @app.post("/verifica_op_binarios")
 def tablas_de_verdad_binarias(operando1, operando2, operador):
@@ -1156,9 +1238,9 @@ def posibilidades_logicas(frase):
     numero_combinaciones = 2 ** terminales
     valores = [True, False]
 
-    for combo in range(numero_combinaciones):  # 0-3
+    for combo in range(numero_combinaciones):  # 0-7
         proposicion = []
-        for divisor in range(terminales):  # 0-1
+        for divisor in range(terminales):  # 0-2
 
             if (combo // (2 ** divisor)) % 2 == 0:
                 proposicion.append(valores[0])
@@ -1174,22 +1256,31 @@ def shuting_yard(proposicion):
     lista_prioridad = ["(","<->", "->", "v", "^","~" ]
     queue = []
     pile = []
+    index = 0
     for termino in proposicion:
         if termino == False or termino == True:
+
             queue.append(termino)
 
         elif termino == ")":
-            while pile[len(pile) - 1] != "(":
+
+            while pile[len(pile) - 1][0] != "(":
                 queue.append(pile.pop())
             pile.pop()
         else:
+            tupla_parcial = (termino, index)
+
+            index_termino_final = len(pile) - 1
             if len(pile) == 0:
-                pile.append(termino)
-            elif lista_prioridad.index(termino) < lista_prioridad.index(pile[len(pile) - 1]) and lista_prioridad.index(termino) != 0:
+                pile.append(tupla_parcial)
+            elif lista_prioridad.index(termino) < lista_prioridad.index(pile[index_termino_final][0]) and lista_prioridad.index(termino) != 0:
                 queue.append(pile.pop())
-                pile.append(termino)
+                pile.append(tupla_parcial)
+            elif lista_prioridad.index(termino) != 0:
+                pile.append(tupla_parcial)
             else:
                 pile.append(termino)
+        index += 1
 
     while pile != []:
         queue.append(pile.pop())
@@ -1197,30 +1288,41 @@ def shuting_yard(proposicion):
     return queue
 
 @app.post("/polaco_inverso")
-def desarrolla_metodo_polaco_inverso(cola):
+def desarrolla_metodo_polaco_inverso(cola, lista_no_polaca):
+
     index = 0
     while index < len(cola):
-        if  cola[index] != True and cola[index] != False :
-            if cola[index] == "~":
+        if cola[index] != True and cola[index] != False :
+            if cola[index][0] == "~":
                 operando1 = cola.pop(index - 1)
-                operador = cola.pop(index - 1)
+                operador, pocision_original = cola.pop(index - 1)
                 cola.insert(index - 1, tablas_de_verdad_unarias(operando1, operador))
+                lista_no_polaca[pocision_original] = tablas_de_verdad_unarias(operando1, operador)
                 index -= 1
                 continue
             else:
                 operando1 = cola.pop(index - 2)
                 operando2 = cola.pop(index - 2)
-                operador = cola.pop(index - 2)
+                operador, pocision_original = cola.pop(index - 2)
                 cola.insert(index - 2, tablas_de_verdad_binarias(operando1, operando2, operador))
+                lista_no_polaca[pocision_original] = tablas_de_verdad_binarias(operando1,operando2, operador)
                 index -= 2
                 continue
-        index += 1
 
-    return cola
+        index += 1
+    for index in range(len(lista_no_polaca)):
+        if lista_no_polaca[index] == True:
+            lista_no_polaca[index] = "V"
+        elif lista_no_polaca[index] == False:
+            lista_no_polaca[index] = "F"
+
+    return lista_no_polaca
 
 @app.post("/corregidor")
 def corrige_proposiciones(frase):
     frase = elimina_espacios(frase)
+    frase.append(")")
+    frase.insert(0, "(")
 
     lista_permitida1 = [x for x in range(97, 123)]  # minusculas
     lista_permitida2 = [x for x in range(65, 91)]  # mayusculas
@@ -1259,8 +1361,11 @@ def corrige_proposiciones(frase):
         if ord(caracter) not in lista_permitida1 and ord(caracter) not in lista_permitida3:
             return None
         else:
-            if caracter == "(":
-                parantesis_a += 1
+            if caracter == "(" or caracter == "~":
+                if ord(frase[index + 1]) not in lista_permitida1 and frase[index + 1] != "~" and frase[index + 1] != "(":
+                    return None
+                elif caracter == "(":
+                    parantesis_a += 1
             elif caracter == ")":
                 parantesis_c += 1
             elif caracter == "<":
@@ -1286,9 +1391,6 @@ def corrige_proposiciones(frase):
             elif caracter == ">":
                 if frase[index - 1] != "-":
                     return None
-            elif caracter == "~":
-                if ord(frase[index + 1]) not in lista_permitida1 and frase[index + 1] != "~":
-                    return None
             elif 0 < index < (len(frase) - 1):
                 if ord(caracter) in lista_permitida1 and (ord(frase[index + 1]) in lista_permitida3 and ord(frase[index - 1]) in lista_permitida3):
                     index += 1
@@ -1301,6 +1403,8 @@ def corrige_proposiciones(frase):
         index += 1
     if parantesis_a != parantesis_c:
         return None
+    frase.remove("(")
+    frase.pop(len(frase) - 1)
     return frase
 
 

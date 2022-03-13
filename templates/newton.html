@@ -7,7 +7,7 @@
         <div class="row mb-2">
             <div class="col-md-5">
                 <label class="form-label" for="primer_termino">
-                    primer termino
+                    Primer término
                 </label>
                 <input type="text" class="form-control" placeholder="______________" id = "primer_termino" name = "primer_termino" required>
             </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="col-md-5">
                 <label class="form-label" for="segundo_termino">
-                    segundo termino
+                    Segundo término
                 </label>
                 <input type="text" class="form-control" placeholder="______________" id = "segundo_termino" name = "segundo_termino" required>
             </div>
@@ -31,22 +31,25 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="form-label" for="exponente">
-                    exponente
+                    Exponente
                 </label>
                 <input type="number" class="form-control" placeholder="______________" id = "exponente" name = "exponente" min="0" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label" for="num">
-                    termino buscado
+                    Término buscado
                 </label>
                 <input type="number" class="form-control"
                        placeholder="______________" id = "num" name = "num"
                        min="1" required>
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-info">
-            Desarrollar
-        </button>
+        <div class="d-grid gap-2 col-4 mx-auto">
+            <button type="submit" class="btn btn-outline-info">
+                Desarrollar
+            </button>
+        </div>
+
     </form>
     <p class = "resultado">
         {% if binomio_inicial %}
@@ -63,7 +66,7 @@
     </p>
     <p class = "resultado">
         {% if Termino_buscado %}
-                El termino {{ numero }} es: {{ Termino_buscado | safe }}
+                El término nº {{ numero }} es: {{ Termino_buscado | safe }}
         {% else %}
 
         {% endif %}

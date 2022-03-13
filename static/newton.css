@@ -1,6 +1,6 @@
 html {
-        background: radial-gradient(circle at 100%, grey, white 45%, white 60%, grey 80%);
-        background-repeat: no-repeat;
+        background: radial-gradient(circle at 150%, darkgrey, lightgray 50%, white 60%, grey 90%);
+
         background-size: cover;
         height: 100%;
 

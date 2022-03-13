@@ -36,24 +36,35 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="row mb-5">
+            <div class="d-grid gap-2 col-3 ">
                     <input type="text" class="form-control" placeholder="coloca aqui el/los alelos a buscar"id = "buscador" maxlength="{{ cantidad_alelos * 4 }}" name = "alelo_buscado">
             </div>
-            <div>
+            <div class="d-grid gap-2 col-2" >
                 <button type="submit" class="btn btn-outline-info">
                     Crear tabla
                 </button>
             </div>
         {% else %}
-            <div class="col">
-                <label class="form-label" for="cantidad_alelos">
-                    Cantidad de genes
-                </label>
-                <input type="number" class="form-control" placeholder="AaBb = 2 genes; Aa = 1 gen" id = "cantidad_alelos" name = "cantidad_alelos" min="1" required>
-                <button type="submit" class="btn btn-outline-info">
-                    Ingresar
-                </button>
-            </div>
+            <form class="row g-3" method="post" action="/logica" id="formulario">
+
+                <div class="d-grid gap-2 col-3 mx-auto" >
+                    <label class="form-label" for="cantidad_alelos">
+                        Cantidad de genes
+                    </label>
+                    <input type="number" class="form-control" placeholder="AaBb = 2 genes; Aa = 1 gen" id = "cantidad_alelos" name = "cantidad_alelos" min="1" required >
+                </div>
+                <div class="d-grid gap-2 col-4 mx-auto">
+                    <button type="submit" class="btn btn-outline-info">
+                        Ingresar
+                    </button>
+                </div>
+            </form>
+
+
+
+
+
+
         {% endif %}
 
     </form>
@@ -64,7 +75,7 @@
                     Los genotipos con el/los alelo/s "{{ alelo_buscado }}" están resaltados
                 </div>
             {% endif %}
-            <table class="table table-bordered align-middle">
+            <table class="table table-bordered align-middle" style="border-color: black">
                 <thead>
                     <tr>
                         {% for cabeza in matriz_alelos[0] %}

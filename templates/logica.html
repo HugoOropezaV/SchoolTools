@@ -20,20 +20,29 @@
             equivale: <->
         </li>
     </ul>
-    <form method="post" action="/logica" id="formulario">
-        <input type="text" id = "frase_logica" name = "frase_logica" value="{{ frase_logica }}" required>
 
-        <button type="submit" class="btn btn-outline-info">
-            Desarrollar tablas de verdad
-        </button>
+    <form class="row g-3" method="post" action="/logica" id="formulario">
+        <div class="col-12">
+            <input class="form-control" type="text" id = "frase_logica" name = "frase_logica" value="{{ frase_logica }}" required>
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-info" type="submit">
+                Desarrollar tablas de verdad
+            </button>
+        </div>
     </form>
+    <div>
+        <p>
+
+        </p>
+    </div>
     <div class="table-responsive">
         {% if tabla_de_verdades %}
-            <table class="table table-bordered align-middle">
+            <table  class="table table-bordered align-middle" style="border-color: dimgrey">
                 <thead>
-                    <tr>
+                    <tr align="center">
                         {% for cabeza in tabla_de_verdades[0] %}
-                            <th scope="col">
+                            <th  scope="col"  >
                                 {{ cabeza }}
                             </th>
                         {% endfor %}
@@ -43,9 +52,19 @@
                     {% for fila in tabla_de_verdades[1:] %}
                         <tr>
                             {% for casilla in fila %}
-                                <td>
+                                {% if casilla == "V" %}
+                                <td align="center" style="background-color: rgb(15,171,34)">
                                     {{ casilla | safe }}
                                 </td>
+                                {% elif  casilla == "F"%}
+                                <td align="center" style="background-color: rgb(235,14,14)">
+                                    {{ casilla | safe }}
+                                </td>
+                                {% else %}
+                                <td align="center">
+                                    {{ casilla | safe }}
+                                </td>
+                                {% endif %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
