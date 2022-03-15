@@ -1129,9 +1129,14 @@ def desarrolla_logica():
         tabla_de_verdad_no_polaca.append(lista_proposicion_correcta)
         lista_proposicion_polaca = shuting_yard(lista_proposicion_correcta)
         tabla_de_verdad_solucion.append(lista_proposicion_polaca)
-    for index in range(len(tabla_de_verdad_solucion)):
-        tabla_de_verdad_solucion[index] = desarrolla_metodo_polaco_inverso(tabla_de_verdad_solucion[index], tabla_de_verdad_no_polaca[index])
 
+    columna_solucion = lista_proposiciones[:]
+
+
+    for index in range(len(tabla_de_verdad_solucion)):
+        tabla_de_verdad_solucion[index], columna_solucion[index] = desarrolla_metodo_polaco_inverso(tabla_de_verdad_solucion[index], tabla_de_verdad_no_polaca[index])
+
+    clasificacion = clasifica_proposiciones_por_solucion(columna_solucion)
     tabla_de_verdad_solucion.insert(0, lista_proposicion_posible)
     for fila in lista_proposiciones:
         for index in range(len(fila)):
@@ -1154,7 +1159,8 @@ def desarrolla_logica():
     for num_fila in range(len(tabla_de_verdad_solucion)):
         for index in range(len(lista_proposiciones[num_fila]) - 1, -1, -1):
             tabla_de_verdad_solucion[num_fila].insert(0, lista_proposiciones[num_fila][index])
-    return render_template("logica.html", tabla_de_verdades = tabla_de_verdad_solucion, tabla_terminales = lista_proposiciones)
+
+    return render_template("logica.html", frase_logica = frase_logica, clasificacion = clasificacion, tabla_de_verdades = tabla_de_verdad_solucion, tabla_terminales = lista_proposiciones)
 
 @app.post("/verifica_op_binarios")
 def tablas_de_verdad_binarias(operando1, operando2, operador):
@@ -1240,7 +1246,7 @@ def posibilidades_logicas(frase):
 
     for combo in range(numero_combinaciones):  # 0-7
         proposicion = []
-        for divisor in range(terminales):  # 0-2
+        for divisor in range(terminales - 1, -1, -1):  # 0-2
 
             if (combo // (2 ** divisor)) % 2 == 0:
                 proposicion.append(valores[0])
@@ -1316,7 +1322,32 @@ def desarrolla_metodo_polaco_inverso(cola, lista_no_polaca):
         elif lista_no_polaca[index] == False:
             lista_no_polaca[index] = "F"
 
-    return lista_no_polaca
+    return lista_no_polaca, cola
+
+@app.post("/clasificador")
+def clasifica_proposiciones_por_solucion(soluciones_finales):
+    filas_verdaderas = ""
+    soluciones_verdaderas = [0,[]]
+    for index in range(len(soluciones_finales)):
+        if soluciones_finales[index][0] == True:
+            soluciones_verdaderas[0] += 1
+            soluciones_verdaderas[1].append(index + 1)
+
+    for index in range(1, len(soluciones_verdaderas[1])):
+        filas_verdaderas += (", " + str(soluciones_verdaderas[1][index]))
+
+    if soluciones_verdaderas[0] == len(soluciones_finales):
+        clasificacion = ("tautología, y es satisfactible en todas las filas")
+    elif 2 > soluciones_verdaderas[0] > 0:
+        clasificacion = ("satisfactible en la fila: " + str(soluciones_verdaderas[1][0]) + filas_verdaderas)
+
+    elif soluciones_verdaderas[0] > 0:
+        clasificacion = ("satisfactible en las filas: " + str(soluciones_verdaderas[1][0]) + filas_verdaderas)
+    elif soluciones_verdaderas[0] == 0:
+        clasificacion = ("contradicción, e insatisfactible en todas las filas")
+
+
+    return clasificacion
 
 @app.post("/corregidor")
 def corrige_proposiciones(frase):

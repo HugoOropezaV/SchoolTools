@@ -31,10 +31,12 @@
             </button>
         </div>
     </form>
-    <div>
+    <div class="resultado">
+        {% if frase_logica and clasificacion %}
         <p>
-
+            La formula lógica: {{ frase_logica | safe }} es {{ clasificacion | safe }}
         </p>
+        {% endif %}
     </div>
     <div class="table-responsive">
         {% if tabla_de_verdades %}
