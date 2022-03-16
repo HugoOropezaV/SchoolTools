@@ -11,13 +11,22 @@
             Disyunción: v
         </li>
         <li>
-            negación: ~
+            Negación: ~
         </li>
         <li>
-            implica: ->
+            Implica: ->
         </li>
         <li>
-            equivale: <->
+            Equivale/equivalencia: <->
+            <p>
+                Serán 2 fórmulas lógicas equivalentes si resulta en tautología
+            </p>
+        </li>
+        <li>
+            Consecuencia lógica(ejemplo): (X ^ Y) -> Z
+            <p>
+                Será consecuensia lógica si resulta en tautología
+            </p>
         </li>
     </ul>
 
@@ -78,7 +87,7 @@
     <div>
         {% if frase_logica_corregida == "no legible" %}
         <p class="resultado">
-            hubo un error en la proposición ingresada al leerla
+            hubo un error en la proposición: {{ frase_logica | safe }} al leerla
         </p>
         {% else %}
         {% endif %}

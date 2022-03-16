@@ -1106,7 +1106,7 @@ def desarrolla_logica():
     frase_logica_corregida = corrige_proposiciones(frase_logica)
     if frase_logica_corregida == None:
         frase_logica_corregida = "no legible"
-        return render_template("logica.html", frase_logica_corregida = frase_logica_corregida)
+        return render_template("logica.html", frase_logica_corregida = frase_logica_corregida, frase_logica = frase_logica)
 
     lista_proposicion, lista_proposiciones = posibilidades_logicas(frase_logica_corregida)
 
@@ -1337,14 +1337,14 @@ def clasifica_proposiciones_por_solucion(soluciones_finales):
         filas_verdaderas += (", " + str(soluciones_verdaderas[1][index]))
 
     if soluciones_verdaderas[0] == len(soluciones_finales):
-        clasificacion = ("tautología, y es satisfactible en todas las filas")
+        clasificacion = ("una tautología, y es satisfactible en todas las filas")
     elif 2 > soluciones_verdaderas[0] > 0:
         clasificacion = ("satisfactible en la fila: " + str(soluciones_verdaderas[1][0]) + filas_verdaderas)
 
     elif soluciones_verdaderas[0] > 0:
         clasificacion = ("satisfactible en las filas: " + str(soluciones_verdaderas[1][0]) + filas_verdaderas)
     elif soluciones_verdaderas[0] == 0:
-        clasificacion = ("contradicción, e insatisfactible en todas las filas")
+        clasificacion = ("una contradicción, e insatisfactible en todas las filas")
 
 
     return clasificacion
