@@ -461,7 +461,8 @@ def busca_errores(mi_ecuacion):
         if mi_ecuacion[indice] == "^":
             if mi_ecuacion[indice + 2] != "+":
                 if mi_ecuacion[indice + 2] != "-":
-                    return True
+                    if mi_ecuacion[indice + 2] != " ":
+                        return True
 
     return False
 
@@ -1147,7 +1148,7 @@ def desarrolla_logica():
     i = 0
     while i < len(lista_de_repeticiones):
         lista_de_repeticiones[i] = str(lista_de_repeticiones[i])
-        if not 65 < ord(lista_de_repeticiones[i]) < 91:
+        if not 64 < ord(lista_de_repeticiones[i]) < 91:
             lista_de_repeticiones.pop(i)
             i -= 1
         i += 1
