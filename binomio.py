@@ -648,10 +648,11 @@ def desarrollar_parabola(A, B, D, E, F, orintacion, H, K):
             return None
 
         elif orintacion == "vertical":
-            A /= A
+
             D /= A
             E /= A
             F /= A
+            A /= A
             if D == 0 :
                 V_h = 0
                 if F == 0:
@@ -660,17 +661,18 @@ def desarrollar_parabola(A, B, D, E, F, orintacion, H, K):
                     V_k = (-1 * F) / E
             else:
                 V_h = D / (-2 * A)
-                V_k = (F - ((D / 2) ** 2)) / (- E )
+                V_k = (F - ((D / 2) ** 2)) / (- E)
             F_h = V_h
             F_k = V_k - (E / 4)
             d_focal = E / (-4)
             L_recto = abs(d_focal) * 4
 
         else:
-            B /= B
+
             D /= B
             E /= B
             F /= B
+            B /= B
             if E == 0 :
                 V_k = 0
                 if F == 0:
